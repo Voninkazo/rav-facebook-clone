@@ -5,8 +5,8 @@ import {Link} from 'react-router-dom';
 const MenuStyles = styled.ul`
 	display: flex;
 	list-style: none;
-	justify-content: space-between;
 	gap: 20px;
+	padding : 0;
 	a {
 		text-decoration: none;
 		font-size: 36px;
