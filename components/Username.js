@@ -2,9 +2,11 @@ import React from 'react'
 
 function Username() {
   return (
-    <div>
-      <h3>Username</h3>
-    </div>
+    <form>
+      <input type="text" name="username"  placeholder="Your username"/>
+      <input type="url" name="profile" placeholder="Your picture url" />
+      <button>Save</button>
+    </form>
   )
 }
 

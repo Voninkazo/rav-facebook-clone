@@ -65,6 +65,7 @@ ul {
   padding-bottom: 9px;
   padding-left: 19px;
   cursor: pointer;
+  width: 100%;
 }
 .submit_comments_form button {
   font-weight: 500;
@@ -72,10 +73,16 @@ ul {
   line-height: 24px;
   color: #000000;
   background-color: #fcfafa;
-  border-radius: 12px;
+  border-radius: 19px;
   border: none;
-  padding: 9px 13px;
+  padding: 3px 26px;
+  outline: none;
   cursor: pointer;
+}
+
+.main_profile_img {
+  width: 50px;
+  border-radius: 50%;
 }
 
 /*# sourceMappingURL=/styles.164d45a1.css.map */

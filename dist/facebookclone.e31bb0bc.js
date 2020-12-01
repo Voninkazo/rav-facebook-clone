@@ -33855,19 +33855,84 @@ if ("development" !== "production") {
 }
 },{"react-router":"node_modules/react-router/esm/react-router.js","@babel/runtime/helpers/esm/inheritsLoose":"node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","react":"node_modules/react/index.js","history":"node_modules/history/esm/history.js","prop-types":"node_modules/prop-types/index.js","tiny-warning":"node_modules/tiny-warning/dist/tiny-warning.esm.js","@babel/runtime/helpers/esm/extends":"node_modules/@babel/runtime/helpers/esm/extends.js","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js","tiny-invariant":"node_modules/tiny-invariant/dist/tiny-invariant.esm.js"}],"post.json":[function(require,module,exports) {
 module.exports = [{
-  "username": "Sandy",
-  "profile": "https://picsum.photos/300",
-  "image": "https://picsum.photos/1000",
-  "likes": 100,
-  "date": 1606724563866,
   "id": 1606724563833,
-  "legend": "Look at this lovely wedding dress beautiful grils❤😍😊😊",
+  "image": "https://picsum.photos/1000",
+  "likes": [{
+    "id": 1606802139584,
+    "name": "Sarah"
+  }, {
+    "id": 1606802217055,
+    "name": "Petah"
+  }, {
+    "id": 1606802262792,
+    "name": "Sugie"
+  }],
+  "date": 1606724563866,
+  "legend": "Look at this lovely wedding dress beautiful girls❤😍😊😊",
   "comments": [{
-    "text": "Wow, I love this",
-    "date": 1606724652250,
+    "id": 2,
+    "text": "Yes!!!!!!",
+    "date": 1606802879758,
+    "username": "Arisoa",
+    "profile": "https://picsum.photos/300"
+  }, {
+    "id": 3,
+    "text": "Oooooops",
+    "date": 1606802879758,
     "username": "Arisoa",
     "profile": "https://picsum.photos/300"
   }]
+}, {
+  "image": "https://picsum.photos/1000",
+  "likes": [{
+    "id": 1606802372104,
+    "name": "Sarah"
+  }, {
+    "id": 1606802404672,
+    "name": "Petah"
+  }, {
+    "id": 1606802262792,
+    "name": "Sugie"
+  }],
+  "comments": [{
+    "id": 1606803055863,
+    "text": "Wow, I love this",
+    "date": 1606803055863,
+    "username": "Arisoa",
+    "profile": "https://picsum.photos/300"
+  }],
+  "date": 1606803243213,
+  "id": 1606803243213,
+  "legend": "Lovely place where I like to live in😍😊😊"
+}, {
+  "image": "https://picsum.photos/1000",
+  "likes": [{
+    "id": 1606802139584,
+    "name": "Sarah"
+  }, {
+    "id": 1606802217055,
+    "name": "Petah"
+  }, {
+    "id": 1606802262792,
+    "name": "Sugie"
+  }],
+  "comments": [{
+    "id": 1606803184211,
+    "text": "This is lovely",
+    "date": 1606803184211,
+    "username": "Arisoa",
+    "profile": "https://picsum.photos/300"
+  }],
+  "date": 1606803219596,
+  "id": 1606803219596,
+  "legend": "Have a nice day my friends😊"
+}];
+},{}],"username.json":[function(require,module,exports) {
+module.exports = [{
+  "userId": "121212",
+  "userName": "Sandy",
+  "profile": "https://picsum.photos/100",
+  "birthDate": "13/09/1991"
 }];
 },{}],"Context.js":[function(require,module,exports) {
 "use strict";
@@ -33881,6 +33946,8 @@ exports.Context = void 0;
 var _react = _interopRequireWildcard(require("react"));
 
 var _post = _interopRequireDefault(require("./post.json"));
+
+var _username = _interopRequireDefault(require("./username.json"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33900,29 +33967,117 @@ function ContextProvider(props) {
           allPosts: state.allPosts = action.object
         };
 
+      case "VALUE":
+        return { ...state,
+          inputValue: state.inputValue = action.input
+        };
+
+      case "USERNAME":
+        return { ...state,
+          userName: state.userName = action.name
+        };
+
+      case "LIKES":
+        return { ...state,
+          objLikes: state.objLikes = action.likes
+        };
+
+      case "PROFILE":
+        return { ...state,
+          profilePhoto: state.profilePhoto = action.profile
+        };
+
       default:
         return state;
     }
   }, {
-    allPosts: []
+    allPosts: [],
+    inputValue: "",
+    objLikes: [],
+    userName: "",
+    profilePhoto: ""
   });
   const {
-    allPosts
+    allPosts,
+    inputValue,
+    objLikes,
+    userName,
+    profilePhoto
   } = state;
+
+  function addNewComents(e) {
+    e.preventDefault();
+    const {
+      value
+    } = e.target;
+    dispatch({
+      type: "VALUE",
+      input: value
+    });
+    e.target.reset(); // console.log(value)
+  }
+
+  const allLikes = _post.default.map(post => post.likes);
+
+  const user = _username.default.map(user => user.userName);
+
+  const img = _username.default.map(user => user.profile);
+
   (0, _react.useEffect)(() => {
     dispatch({
       type: "POSTS",
       object: _post.default
     });
+    dispatch({
+      type: "USERNAME",
+      name: user
+    });
+    dispatch({
+      type: "LIKES",
+      likes: allLikes
+    });
+    dispatch({
+      type: "PROFILE",
+      profile: img
+    });
   }, []);
-  console.log(allPosts);
+
+  function addNewPost(e) {
+    e.preventDefault();
+    const {
+      legend,
+      picture
+    } = e.target;
+    const newPost = {
+      "legend": legend,
+      "image": picture,
+      "id": Date.now(),
+      "date": new Date().toLocaleDateString(),
+      "comments": [],
+      "likes": []
+    }; //    dispatch({type:"POSTS", object: newPost})
+
+    console.log(allPosts);
+    allPosts.push(newPost);
+    dispatch({
+      type: "POSTS",
+      object: allPosts
+    });
+  }
+
   return /*#__PURE__*/_react.default.createElement(Context.Provider, {
     value: {
-      allPosts
+      allPosts,
+      inputValue,
+      addNewComents,
+      userName,
+      objLikes,
+      addNewPost,
+      profilePhoto
     }
   }, props.children);
 }
-},{"react":"node_modules/react/index.js","./post.json":"post.json"}],"node_modules/shallowequal/index.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","./post.json":"post.json","./username.json":"username.json"}],"node_modules/shallowequal/index.js":[function(require,module,exports) {
 //
 
 module.exports = function shallowEqual(objA, objB, compare, compareContext) {
@@ -35869,28 +36024,38 @@ const DiveStyles = _styledComponents.default.div`
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    .main_profile_img {
-      width: 50px;
-      border-radius: 50%;
+    li:nth-of-type(1) {
+      display: flex;
+      align-items: center;
+      span {
+        margin-left: 20px;
+        font-weight: bold;
+      }
     }
   }
 `;
 
 function Feed() {
   const {
+    inputValue,
+    addNewComents,
+    userName,
+    objLikes,
+    profilePhoto
+  } = (0, _react.useContext)(_Context.Context);
+  const {
     allPosts
   } = (0, _react.useContext)(_Context.Context);
-  console.log(allPosts);
   const generatePost = allPosts.map(post => {
     const postedDate = new Date(Number(post.date));
-    return /*#__PURE__*/_react.default.createElement(DiveStyles, null, /*#__PURE__*/_react.default.createElement("div", {
+    return /*#__PURE__*/_react.default.createElement(DiveStyles, null, /*#__PURE__*/_react.default.createElement("ul", {
       className: "post_container",
       key: post.id
     }, /*#__PURE__*/_react.default.createElement("li", null, /*#__PURE__*/_react.default.createElement("img", {
       className: "main_profile_img",
-      src: post.profile,
+      src: profilePhoto,
       alt: "Profile photo"
-    }), /*#__PURE__*/_react.default.createElement("span", null, post.username)), /*#__PURE__*/_react.default.createElement("li", null, postedDate.toLocaleDateString())), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", null, post.legend), /*#__PURE__*/_react.default.createElement("img", {
+    }), /*#__PURE__*/_react.default.createElement("span", null, userName)), /*#__PURE__*/_react.default.createElement("li", null, postedDate.toLocaleDateString())), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("img", {
       className: "posted_img",
       src: post.image,
       alt: "Image post"
@@ -35898,7 +36063,7 @@ function Feed() {
       className: "vote_container"
     }, /*#__PURE__*/_react.default.createElement("button", {
       type: "button"
-    }, "Like"), /*#__PURE__*/_react.default.createElement("span", null, post.likes))), /*#__PURE__*/_react.default.createElement("div", null, post.comments.map(com => {
+    }, "Like"))), /*#__PURE__*/_react.default.createElement("div", null, post.comments.map(com => {
       const postedOn = new Date(Number(com.date));
       return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
         key: com.id
@@ -35910,9 +36075,12 @@ function Feed() {
         alt: "Profile photo"
       }), /*#__PURE__*/_react.default.createElement("span", null, com.username)), /*#__PURE__*/_react.default.createElement("li", null, postedOn.toLocaleDateString())), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", null, com.text))));
     })), /*#__PURE__*/_react.default.createElement("form", {
-      className: "submit_comments_form"
+      className: "submit_comments_form",
+      onSubmit: addNewComents
     }, /*#__PURE__*/_react.default.createElement("input", {
       type: "text",
+      value: inputValue,
+      onChange: addNewComents,
       name: "comment",
       placeholder: "Add a comment..."
     }), /*#__PURE__*/_react.default.createElement("button", {
@@ -35932,17 +36100,39 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _Context = require("../Context");
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function Add() {
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h3", null, "Here is Add"));
+  const {
+    addNewPost
+  } = (0, _react.useContext)(_Context.Context);
+  return /*#__PURE__*/_react.default.createElement("form", {
+    onSubmit: e => addNewPost(e)
+  }, /*#__PURE__*/_react.default.createElement("label", {
+    htmlFor: "legend"
+  }, "New post"), /*#__PURE__*/_react.default.createElement("textarea", {
+    placeholder: "Say what is in your mind...",
+    name: "legend",
+    cols: "30",
+    rows: "10"
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    htmlFor: "picture"
+  }, "Piccture url"), /*#__PURE__*/_react.default.createElement("input", {
+    type: "url",
+    name: "picture",
+    id: ""
+  }), /*#__PURE__*/_react.default.createElement("button", null, "Post"));
 }
 
 var _default = Add;
 exports.default = _default;
-},{"react":"node_modules/react/index.js"}],"components/Username.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","../Context":"Context.js"}],"components/Username.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35955,7 +36145,15 @@ var _react = _interopRequireDefault(require("react"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Username() {
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h3", null, "Username"));
+  return /*#__PURE__*/_react.default.createElement("form", null, /*#__PURE__*/_react.default.createElement("input", {
+    type: "text",
+    name: "username",
+    placeholder: "Your username"
+  }), /*#__PURE__*/_react.default.createElement("input", {
+    type: "url",
+    name: "profile",
+    placeholder: "Your picture url"
+  }), /*#__PURE__*/_react.default.createElement("button", null, "Save"));
 }
 
 var _default = Username;
@@ -36086,7 +36284,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53870" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49558" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
