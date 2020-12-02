@@ -33960,6 +33960,7 @@ const Context = _react.default.createContext();
 exports.Context = Context;
 
 function ContextProvider(props) {
+  const useref = (0, _react.useRef)(null);
   const [state, dispatch] = (0, _react.useReducer)((state, action) => {
     switch (action.type) {
       case "POSTS":
@@ -34054,6 +34055,7 @@ function ContextProvider(props) {
     if (!isLiked) {
       const updatedPost = allPosts.map(item => {
         if (item.id == post.id) {
+          useref.current.className = "liked";
           return { ...item,
             likes: [...item.likes, _username.default]
           };
@@ -34069,6 +34071,7 @@ function ContextProvider(props) {
     } else {
       const updatedPost = allPosts.map(item => {
         if (item.id == post.id) {
+          useref.current.className = "unliked";
           const newPostsArray = post.likes.filter(item => item.id != _username.default.id);
           return { ...item,
             likes: newPostsArray
@@ -34110,7 +34113,8 @@ function ContextProvider(props) {
       userName,
       addNewPost,
       profilePhoto,
-      handleClickLike
+      handleClickLike,
+      useref
     }
   }, props.children);
 }
@@ -36080,7 +36084,8 @@ function Feed() {
   } = (0, _react.useContext)(_Context.Context);
   const {
     allPosts,
-    handleClickLike
+    handleClickLike,
+    useref
   } = (0, _react.useContext)(_Context.Context);
   const generatePost = allPosts.map(post => {
     const postedDate = new Date(Number(post.date));
@@ -36099,6 +36104,7 @@ function Feed() {
     }), /*#__PURE__*/_react.default.createElement("div", {
       className: "vote_container"
     }, /*#__PURE__*/_react.default.createElement("button", {
+      ref: useref,
       type: "button",
       className: "like-btn",
       onClick: () => handleClickLike(post)

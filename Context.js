@@ -1,10 +1,11 @@
-import React, { useEffect,useReducer} from 'react';
+import React, { useEffect,useReducer, useRef} from 'react';
 
 import Posts from './post.json';
 import usernameData from './username.json';
 const Context = React.createContext();
 
 function ContextProvider(props) {
+    const useref = useRef(null)
     const [state,dispatch] = useReducer((state,action) => {
         switch(action.type) {
             case "POSTS":
@@ -81,6 +82,7 @@ function ContextProvider(props) {
             if(!isLiked) {
                 const updatedPost = allPosts.map(item => {
                     if(item.id == post.id) {
+                        useref.current.className = "liked"
                         return {
                             ...item,
                             likes: [...item.likes, usernameData]
@@ -93,6 +95,7 @@ function ContextProvider(props) {
             }else {
                 const updatedPost = allPosts.map(item => {
                     if(item.id == post.id) {
+                        useref.current.className = "unliked"
                         const newPostsArray= post.likes.filter(item => item.id != usernameData.id)
                         return {
                             ...item,
@@ -115,7 +118,7 @@ function ContextProvider(props) {
     },[])
 
   return (
-   <Context.Provider value={{allPosts,inputValue, addNewComents,userName,addNewPost,profilePhoto,handleClickLike}}>
+   <Context.Provider value={{allPosts,inputValue, addNewComents,userName,addNewPost,profilePhoto,handleClickLike,useref}}>
        {props.children}
    </Context.Provider>
   )

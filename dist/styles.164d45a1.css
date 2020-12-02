@@ -126,4 +126,12 @@ ul {
   padding: 0.5rem 1rem;
 }
 
+.liked {
+  background-color: blue;
+}
+
+.unliked {
+  background-color: #C4C4C4;
+}
+
 /*# sourceMappingURL=/styles.164d45a1.css.map */

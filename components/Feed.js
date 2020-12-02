@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
 
 const DiveStyles = styled.div`
@@ -22,7 +22,7 @@ import {Context} from '../Context';
 
 function Feed() {
   const {addNewComents,userName,profilePhoto} = useContext(Context)
-  const {allPosts, handleClickLike} = useContext(Context);
+  const {allPosts, handleClickLike,useref} = useContext(Context);
   
   const generatePost = allPosts.map(post => {
     const postedDate =new Date(Number(post.date))
@@ -41,7 +41,7 @@ function Feed() {
           <p>{post.legend}</p>
           <img className="posted_img" src={post.image} alt="Image post"/>
          <div className="vote_container">
-           <button type="button" className="like-btn" onClick={() =>handleClickLike(post)}>Like</button>
+           <button ref={useref} type="button" className="like-btn" onClick={() =>handleClickLike(post)}>Like</button>
           <span>{post.likes.length}</span>
          </div>
         </div>
