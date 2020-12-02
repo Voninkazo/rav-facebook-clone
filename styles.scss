@@ -80,6 +80,39 @@ ul {
     }
 }
 
+.add-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    button {
+        padding: 1rem 2rem;
+        border: none;
+        outline: none;
+        background-color: #C4C4C4;
+        border-radius: 20px;
+        font-size: 20px;
+        color: #000000;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    input {
+        padding: 1rem 2rem;
+        background-color: rgb(88, 255, 163);
+        outline: none;
+        border: none;
+        border-radius: 20px;
+        font-size: 18px;
+        color: blue;
+    }
+    textarea {
+        background-color: yellowgreen;
+        outline: none;
+        font-size: 18px;
+        padding: 20px;
+        border-radius: 20px;
+    }
+}
+
 .main_profile_img {
     width: 50px;
     border-radius: 50%;

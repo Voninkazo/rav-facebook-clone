@@ -4,8 +4,6 @@ import Posts from './post.json';
 import usernameData from './username.json';
 const Context = React.createContext();
 
-
-
 function ContextProvider(props) {
     const [state,dispatch] = useReducer((state,action) => {
         switch(action.type) {
@@ -38,13 +36,53 @@ function ContextProvider(props) {
 
     const {allPosts,inputValue,objLikes,userName,profilePhoto} = state;
 
-    function addNewComents(e) {
-        e.preventDefault();
-        const {value}  = e.target;
-        dispatch({type: "VALUE", input: value})
+    function addNewComents(e,id) {
+        const {comment}  = e.target;
+        // dispatch({type: "VALUE", input: comment.value})
+       
+        const newComments = {
+            date: Date.now(),
+            id:Date.now(),
+            username: userName,
+            profile: profilePhoto,
+            text: comment.value,
+        }
+
+        console.log(newComments)
+        const updatedPosts = allPosts.map(post => {
+            console.log(id)
+            if(post.id === id) {
+                return {
+                    ...post,
+                    comments: [...post.comments,newComments],
+                }
+            }
+            return post
+        })
+        console.log(updatedPosts)
+            dispatch({type:"POSTS",object: updatedPosts})
         e.target.reset();
+        e.preventDefault();
         // console.log(value)
     }
+
+    function addNewPost(e) {
+        e.preventDefault();
+        const {legend, picture} = e.target;
+       const newPost= {
+            "legend": legend.value,
+            "image": picture.value,
+            "id": Date.now(),
+            "date": Date.now(),
+            "comments": [],
+            "likes": [],
+       }
+    console.log(allPosts)
+     allPosts.push(newPost)
+    dispatch({type:"POSTS", object: allPosts})
+    e.target.reset();
+    }
+
   
    const allLikes = Posts.map(post => post.likes);
    const user = usernameData.map(user => user.userName)
@@ -56,25 +94,6 @@ function ContextProvider(props) {
         dispatch({type:"LIKES", likes:  allLikes})
         dispatch({type:"PROFILE", profile: img})
     },[])
-
-    function addNewPost(e) {
-        e.preventDefault();
-        const {legend, picture} = e.target;
-       const newPost= {
-            "legend": legend,       
-            "image": picture,
-            "id": Date.now(),
-            "date": new Date().toLocaleDateString(),
-            "comments": [],
-            "likes": [],
-       }
-    //    dispatch({type:"POSTS", object: newPost})
-    console.log(allPosts)
-    
-     allPosts.push(newPost)
-    dispatch({type:"POSTS", object: allPosts})
-    }
-
 
   return (
    <Context.Provider value={{allPosts,inputValue, addNewComents,userName,objLikes,addNewPost,profilePhoto}}>

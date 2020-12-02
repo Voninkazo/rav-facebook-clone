@@ -80,6 +80,39 @@ ul {
   cursor: pointer;
 }
 
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.add-form button {
+  padding: 1rem 2rem;
+  border: none;
+  outline: none;
+  background-color: #C4C4C4;
+  border-radius: 20px;
+  font-size: 20px;
+  color: #000000;
+  font-weight: bold;
+  cursor: pointer;
+}
+.add-form input {
+  padding: 1rem 2rem;
+  background-color: #58ffa3;
+  outline: none;
+  border: none;
+  border-radius: 20px;
+  font-size: 18px;
+  color: blue;
+}
+.add-form textarea {
+  background-color: yellowgreen;
+  outline: none;
+  font-size: 18px;
+  padding: 20px;
+  border-radius: 20px;
+}
+
 .main_profile_img {
   width: 50px;
   border-radius: 50%;

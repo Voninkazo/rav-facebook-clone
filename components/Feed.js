@@ -27,8 +27,8 @@ function Feed() {
   const generatePost = allPosts.map(post => {
     const postedDate =new Date(Number(post.date))
     return(
-      <DiveStyles>
-        <ul className="post_container" key={post.id}>
+      <DiveStyles key={post.id}>
+        <ul className="post_container" >
           <li>
             <img className="main_profile_img" src={profilePhoto} alt="Profile photo"/>
             <span>{userName}</span>
@@ -38,20 +38,24 @@ function Feed() {
           </li>
         </ul>
         <div>
-          {/* <p>{post.legend}</p> */}
+          <p>{post.legend}</p>
           <img className="posted_img" src={post.image} alt="Image post"/>
          <div className="vote_container">
            <button type="button">Like</button>
            {/* <span>{post.likes}</span> */}
          </div>
         </div>
+        <form className="submit_comments_form" onSubmit={(e) => addNewComents(e,post.id)}>
+            <input type="text" name="comment" placeholder="Add a comment..." />
+            <button>Post</button>
+        </form>
         <div>
             {
             post.comments.map(com => {
                 const postedOn = new Date(Number(com.date))
                 return(
                   <>
-                    <div key={com.id}>
+                    <div key={com.date}>
                       <ul className="comments_container">
                           <li>
                             <img className="sub_profile_img" src={com.profile} alt="Profile photo"/>
@@ -68,10 +72,6 @@ function Feed() {
               })
             }
         </div>
-        <form className="submit_comments_form" onSubmit={addNewComents}>
-          <input type="text" value={inputValue} onChange={addNewComents} name="comment" placeholder="Add a comment..."/>
-          <button type="submit">Post</button>
-        </form>
       </DiveStyles>
     )
   })
