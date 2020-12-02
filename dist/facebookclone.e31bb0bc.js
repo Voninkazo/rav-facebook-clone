@@ -33858,13 +33858,13 @@ module.exports = [{
   "id": 1606724563833,
   "image": "https://picsum.photos/1000",
   "likes": [{
-    "id": 1606802139584,
+    "id": 1,
     "name": "Sarah"
   }, {
-    "id": 1606802217055,
+    "id": 2,
     "name": "Petah"
   }, {
-    "id": 1606802262792,
+    "id": 3,
     "name": "Sugie"
   }],
   "date": 1606724563866,
@@ -33885,13 +33885,13 @@ module.exports = [{
 }, {
   "image": "https://picsum.photos/1000",
   "likes": [{
-    "id": 1606802372104,
+    "id": 4,
     "name": "Sarah"
   }, {
-    "id": 1606802404672,
+    "id": 5,
     "name": "Petah"
   }, {
-    "id": 1606802262792,
+    "id": 6,
     "name": "Sugie"
   }],
   "comments": [{
@@ -33907,13 +33907,13 @@ module.exports = [{
 }, {
   "image": "https://picsum.photos/1000",
   "likes": [{
-    "id": 1606802139584,
+    "id": 7,
     "name": "Sarah"
   }, {
-    "id": 1606802217055,
+    "id": 8,
     "name": "Petah"
   }, {
-    "id": 1606802262792,
+    "id": 9,
     "name": "Sugie"
   }],
   "comments": [{
@@ -33967,19 +33967,9 @@ function ContextProvider(props) {
           allPosts: state.allPosts = action.object
         };
 
-      case "VALUE":
-        return { ...state,
-          inputValue: state.inputValue = action.input
-        };
-
       case "USERNAME":
         return { ...state,
           userName: state.userName = action.name
-        };
-
-      case "LIKES":
-        return { ...state,
-          objLikes: state.objLikes = action.likes
         };
 
       case "PROFILE":
@@ -33992,15 +33982,12 @@ function ContextProvider(props) {
     }
   }, {
     allPosts: [],
-    inputValue: "",
-    objLikes: [],
     userName: "",
     profilePhoto: ""
   });
-  const {
+  let {
     allPosts,
     inputValue,
-    objLikes,
     userName,
     profilePhoto
   } = state;
@@ -34008,8 +33995,7 @@ function ContextProvider(props) {
   function addNewComents(e, id) {
     const {
       comment
-    } = e.target; // dispatch({type: "VALUE", input: comment.value})
-
+    } = e.target;
     const newComments = {
       date: Date.now(),
       id: Date.now(),
@@ -34053,7 +34039,7 @@ function ContextProvider(props) {
       "likes": []
     };
     console.log(allPosts);
-    allPosts.push(newPost);
+    allPosts = [...allPosts, newPost];
     dispatch({
       type: "POSTS",
       object: allPosts
@@ -34061,7 +34047,42 @@ function ContextProvider(props) {
     e.target.reset();
   }
 
-  const allLikes = _post.default.map(post => post.likes);
+  function handleClickLike(post) {
+    console.log(post);
+    const isLiked = post.likes.some(item => item.id == _username.default.id); // console.log(isLiked);
+
+    if (!isLiked) {
+      const updatedPost = allPosts.map(item => {
+        if (item.id == post.id) {
+          return { ...item,
+            likes: [...item.likes, _username.default]
+          };
+        }
+
+        return item;
+      });
+      console.log(updatedPost, "liked");
+      dispatch({
+        type: "POSTS",
+        object: updatedPost
+      });
+    } else {
+      const updatedPost = allPosts.map(item => {
+        if (item.id == post.id) {
+          const newPostsArray = post.likes.filter(item => item.id != _username.default.id);
+          return { ...item,
+            likes: newPostsArray
+          };
+        }
+
+        return item;
+      });
+      dispatch({
+        type: "POSTS",
+        object: updatedPost
+      });
+    }
+  }
 
   const user = _username.default.map(user => user.userName);
 
@@ -34077,10 +34098,6 @@ function ContextProvider(props) {
       name: user
     });
     dispatch({
-      type: "LIKES",
-      likes: allLikes
-    });
-    dispatch({
       type: "PROFILE",
       profile: img
     });
@@ -34091,9 +34108,9 @@ function ContextProvider(props) {
       inputValue,
       addNewComents,
       userName,
-      objLikes,
       addNewPost,
-      profilePhoto
+      profilePhoto,
+      handleClickLike
     }
   }, props.children);
 }
@@ -36057,14 +36074,13 @@ const DiveStyles = _styledComponents.default.div`
 
 function Feed() {
   const {
-    inputValue,
     addNewComents,
     userName,
-    objLikes,
     profilePhoto
   } = (0, _react.useContext)(_Context.Context);
   const {
-    allPosts
+    allPosts,
+    handleClickLike
   } = (0, _react.useContext)(_Context.Context);
   const generatePost = allPosts.map(post => {
     const postedDate = new Date(Number(post.date));
@@ -36083,15 +36099,10 @@ function Feed() {
     }), /*#__PURE__*/_react.default.createElement("div", {
       className: "vote_container"
     }, /*#__PURE__*/_react.default.createElement("button", {
-      type: "button"
-    }, "Like"))), /*#__PURE__*/_react.default.createElement("form", {
-      className: "submit_comments_form",
-      onSubmit: e => addNewComents(e, post.id)
-    }, /*#__PURE__*/_react.default.createElement("input", {
-      type: "text",
-      name: "comment",
-      placeholder: "Add a comment..."
-    }), /*#__PURE__*/_react.default.createElement("button", null, "Post")), /*#__PURE__*/_react.default.createElement("div", null, post.comments.map(com => {
+      type: "button",
+      className: "like-btn",
+      onClick: () => handleClickLike(post)
+    }, "Like"), /*#__PURE__*/_react.default.createElement("span", null, post.likes.length))), /*#__PURE__*/_react.default.createElement("div", null, post.comments.map(com => {
       const postedOn = new Date(Number(com.date));
       return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
         key: com.date
@@ -36102,7 +36113,14 @@ function Feed() {
         src: com.profile,
         alt: "Profile photo"
       }), /*#__PURE__*/_react.default.createElement("span", null, com.username)), /*#__PURE__*/_react.default.createElement("li", null, postedOn.toLocaleDateString())), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", null, com.text))));
-    })));
+    })), /*#__PURE__*/_react.default.createElement("form", {
+      className: "submit_comments_form",
+      onSubmit: e => addNewComents(e, post.id)
+    }, /*#__PURE__*/_react.default.createElement("input", {
+      type: "text",
+      name: "comment",
+      placeholder: "Add a comment..."
+    }), /*#__PURE__*/_react.default.createElement("button", null, "Post")));
   });
   return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h3", null, "Here is feed"), generatePost);
 }

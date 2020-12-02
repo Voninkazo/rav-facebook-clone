@@ -21,8 +21,8 @@ const DiveStyles = styled.div`
 import {Context} from '../Context';
 
 function Feed() {
-  const {inputValue,addNewComents,userName,objLikes,profilePhoto} = useContext(Context)
-  const {allPosts} = useContext(Context);
+  const {addNewComents,userName,profilePhoto} = useContext(Context)
+  const {allPosts, handleClickLike} = useContext(Context);
   
   const generatePost = allPosts.map(post => {
     const postedDate =new Date(Number(post.date))
@@ -41,14 +41,10 @@ function Feed() {
           <p>{post.legend}</p>
           <img className="posted_img" src={post.image} alt="Image post"/>
          <div className="vote_container">
-           <button type="button">Like</button>
-           {/* <span>{post.likes}</span> */}
+           <button type="button" className="like-btn" onClick={() =>handleClickLike(post)}>Like</button>
+          <span>{post.likes.length}</span>
          </div>
         </div>
-        <form className="submit_comments_form" onSubmit={(e) => addNewComents(e,post.id)}>
-            <input type="text" name="comment" placeholder="Add a comment..." />
-            <button>Post</button>
-        </form>
         <div>
             {
             post.comments.map(com => {
@@ -72,6 +68,10 @@ function Feed() {
               })
             }
         </div>
+        <form className="submit_comments_form" onSubmit={(e) => addNewComents(e,post.id)}>
+            <input type="text" name="comment" placeholder="Add a comment..." />
+            <button>Post</button>
+        </form>
       </DiveStyles>
     )
   })

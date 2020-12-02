@@ -10,36 +10,27 @@ function ContextProvider(props) {
             case "POSTS":
                 return {...state, allPosts: state.allPosts= action.object}
 
-            case   "VALUE":
-                return{...state, inputValue: state.inputValue = action.input}
-
             case "USERNAME": 
                 return {...state, userName: state.userName = action.name}
 
-            case "LIKES":
-                return {...state, objLikes: state.objLikes = action.likes}
             case "PROFILE":
                 return {...state, profilePhoto: state.profilePhoto = action.profile}
-
-                default:
+                default:    
                     return state
         }
     },
     {
         allPosts: [],
-        inputValue: "",
-        objLikes: [],
         userName: "",
         profilePhoto: "",
     }
     );
 
-    const {allPosts,inputValue,objLikes,userName,profilePhoto} = state;
+    let {allPosts,inputValue,userName,profilePhoto} = state;
 
     function addNewComents(e,id) {
         const {comment}  = e.target;
-        // dispatch({type: "VALUE", input: comment.value})
-       
+
         const newComments = {
             date: Date.now(),
             id:Date.now(),
@@ -78,25 +69,53 @@ function ContextProvider(props) {
             "likes": [],
        }
     console.log(allPosts)
-     allPosts.push(newPost)
+    allPosts = [...allPosts,newPost]
     dispatch({type:"POSTS", object: allPosts})
     e.target.reset();
     }
 
-  
-   const allLikes = Posts.map(post => post.likes);
+    function handleClickLike(post) {
+        console.log(post)
+        const isLiked =  post.likes.some(item => item.id == usernameData.id);
+            // console.log(isLiked);
+            if(!isLiked) {
+                const updatedPost = allPosts.map(item => {
+                    if(item.id == post.id) {
+                        return {
+                            ...item,
+                            likes: [...item.likes, usernameData]
+                        }
+                    }
+                    return item;
+                })
+                console.log(updatedPost, "liked")
+                dispatch({type:"POSTS", object: updatedPost})
+            }else {
+                const updatedPost = allPosts.map(item => {
+                    if(item.id == post.id) {
+                        const newPostsArray= post.likes.filter(item => item.id != usernameData.id)
+                        return {
+                            ...item,
+                            likes: newPostsArray
+                        }
+                    }
+                    return item;
+                })
+                dispatch({type: "POSTS", object: updatedPost})
+            }
+     }
+
    const user = usernameData.map(user => user.userName)
    const img = usernameData.map(user => user.profile)
 
     useEffect(() => {
        dispatch({type: "POSTS", object: Posts}) 
         dispatch({type: "USERNAME", name: user})
-        dispatch({type:"LIKES", likes:  allLikes})
         dispatch({type:"PROFILE", profile: img})
     },[])
 
   return (
-   <Context.Provider value={{allPosts,inputValue, addNewComents,userName,objLikes,addNewPost,profilePhoto}}>
+   <Context.Provider value={{allPosts,inputValue, addNewComents,userName,addNewPost,profilePhoto,handleClickLike}}>
        {props.children}
    </Context.Provider>
   )
