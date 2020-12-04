@@ -36309,14 +36309,16 @@ function Add() {
   }, "New post"), /*#__PURE__*/_react.default.createElement("textarea", {
     placeholder: "Say what is in your mind...",
     value: postContent,
-    onChange: e => setPostContent(e.target.value)
+    onChange: e => setPostContent(e.target.value),
+    required: true
   }), /*#__PURE__*/_react.default.createElement("label", {
     htmlFor: "picture"
   }, "Picture url"), /*#__PURE__*/_react.default.createElement("input", {
     type: "url",
     placeholder: "Paste an URL here...",
     value: postImage,
-    onChange: e => setPostImage(e.target.value)
+    onChange: e => setPostImage(e.target.value),
+    required: true
   }), /*#__PURE__*/_react.default.createElement("button", null, "Post"));
 }
 

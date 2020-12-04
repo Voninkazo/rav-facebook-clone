@@ -36,6 +36,7 @@ function resetForm() {
       placeholder="Say what is in your mind..."
       value={postContent}
       onChange={e => setPostContent(e.target.value)}
+      required
        >
        </textarea>
       <label htmlFor="picture">Picture url</label>
@@ -43,7 +44,8 @@ function resetForm() {
       type="url"
       placeholder="Paste an URL here..."
       value={postImage}
-			onChange={e => setPostImage(e.target.value)}
+      onChange={e => setPostImage(e.target.value)}
+      required
       />
       <button>Post</button>
     </form>
