@@ -33856,7 +33856,7 @@ if ("development" !== "production") {
 },{"react-router":"node_modules/react-router/esm/react-router.js","@babel/runtime/helpers/esm/inheritsLoose":"node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","react":"node_modules/react/index.js","history":"node_modules/history/esm/history.js","prop-types":"node_modules/prop-types/index.js","tiny-warning":"node_modules/tiny-warning/dist/tiny-warning.esm.js","@babel/runtime/helpers/esm/extends":"node_modules/@babel/runtime/helpers/esm/extends.js","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js","tiny-invariant":"node_modules/tiny-invariant/dist/tiny-invariant.esm.js"}],"post.json":[function(require,module,exports) {
 module.exports = [{
   "id": 1606724563833,
-  "image": "https://picsum.photos/1000",
+  "image": "https://picsum.photos/300",
   "likes": [{
     "id": 1,
     "name": "Sarah"
@@ -33873,17 +33873,15 @@ module.exports = [{
     "id": 2,
     "text": "Yes!!!!!!",
     "date": 1606802879758,
-    "username": "Arisoa",
     "profile": "https://picsum.photos/300"
   }, {
     "id": 3,
     "text": "Oooooops",
     "date": 1606802879758,
-    "username": "Arisoa",
     "profile": "https://picsum.photos/300"
   }]
 }, {
-  "image": "https://picsum.photos/1000",
+  "image": "https://picsum.photos/300",
   "likes": [{
     "id": 4,
     "name": "Sarah"
@@ -33898,14 +33896,13 @@ module.exports = [{
     "id": 1606803055863,
     "text": "Wow, I love this",
     "date": 1606803055863,
-    "username": "Arisoa",
     "profile": "https://picsum.photos/300"
   }],
   "date": 1606803243213,
   "id": 1606803243213,
   "legend": "Lovely place where I like to live in😍😊😊"
 }, {
-  "image": "https://picsum.photos/1000",
+  "image": "https://picsum.photos/300",
   "likes": [{
     "id": 7,
     "name": "Sarah"
@@ -33920,19 +33917,23 @@ module.exports = [{
     "id": 1606803184211,
     "text": "This is lovely",
     "date": 1606803184211,
-    "username": "Arisoa",
     "profile": "https://picsum.photos/300"
   }],
   "date": 1606803219596,
   "id": 1606803219596,
   "legend": "Have a nice day my friends😊"
 }];
-},{}],"username.json":[function(require,module,exports) {
+},{}],"userOptions.json":[function(require,module,exports) {
 module.exports = [{
-  "userId": "121212",
+  "userId": "134",
+  "userName": "Arisoa",
+  "profileUrl": "https://picsum.photos/100",
+  "birthDate": "13/30/1991"
+}, {
+  "userId": "121333",
   "userName": "Sandy",
-  "profile": "https://picsum.photos/100",
-  "birthDate": "13/09/1991"
+  "profileUrl": "https://picsum.photos/100",
+  "birthDate": "23/09/1991"
 }];
 },{}],"Context.js":[function(require,module,exports) {
 "use strict";
@@ -33947,7 +33948,7 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _post = _interopRequireDefault(require("./post.json"));
 
-var _username = _interopRequireDefault(require("./username.json"));
+var _userOptions = _interopRequireDefault(require("./userOptions.json"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33965,160 +33966,120 @@ function ContextProvider(props) {
     switch (action.type) {
       case "POSTS":
         return { ...state,
-          allPosts: state.allPosts = action.object
+          allPosts: _post.default,
+          users: _userOptions.default,
+          loading: false
         };
 
-      case "USERNAME":
-        return { ...state,
-          userName: state.userName = action.name
-        };
+      case 'ADD_COMMENT_TO_POST':
+        {
+          const newPosts = state.allPosts.map(post => {
+            if (post.id === action.id) {
+              return { ...post,
+                comments: [...post.comments, action.newComment]
+              };
+            }
 
-      case "PROFILE":
-        return { ...state,
-          profilePhoto: state.profilePhoto = action.profile
-        };
+            return post;
+          });
+          return { ...state,
+            allPosts: newPosts
+          };
+        }
+
+      case "LIKE_POST":
+        {
+          const newPosts = state.allPosts.map(post => {
+            if (post.id === action.id) {
+              return { ...post,
+                likes: [...post.likes, action.newLike]
+              };
+            }
+
+            return post;
+          });
+          return { ...state,
+            allPosts: newPosts
+          };
+        }
+
+      case 'UNLIKE_POST':
+        {
+          const newPosts = state.allPosts.map(post => {
+            if (post.id === action.id) {
+              return { ...post,
+                likes: post.likes.filter(like => like.userId !== state.currentUser)
+              };
+            }
+
+            return post;
+          });
+          return { ...state,
+            allPosts: newPosts
+          };
+        }
+
+      case 'ADD_NEW_POST':
+        {
+          return { ...state,
+            allPosts: [...state.allPosts, action.newPost]
+          };
+        }
+
+      case 'ADD_NEW_COMMENTS':
+        {
+          return { ...state,
+            allPosts: [...state.allPosts, action.newComments]
+          };
+        }
+
+      case 'UPDATE_CURRENT_USER':
+        {
+          const newUsersArray = state.users.map(user => {
+            if (user.userId === state.currentUser) {
+              // update the user and return it
+              return { ...user,
+                userName: action.userName,
+                pictureprofileUrl: action.profileUrl
+              };
+            }
+
+            return user;
+          });
+          return { ...state,
+            users: newUsersArray
+          };
+        }
 
       default:
-        return state;
+        {
+          console.error("No actions");
+          break;
+        }
     }
+
+    return state;
   }, {
     allPosts: [],
-    userName: "",
-    profilePhoto: ""
+    users: [],
+    currentUser: "134",
+    loading: true
   });
-  let {
-    allPosts,
-    inputValue,
-    userName,
-    profilePhoto
-  } = state;
-
-  function addNewComents(e, id) {
-    const {
-      comment
-    } = e.target;
-    const newComments = {
-      date: Date.now(),
-      id: Date.now(),
-      username: userName,
-      profile: profilePhoto,
-      text: comment.value
-    };
-    console.log(newComments);
-    const updatedPosts = allPosts.map(post => {
-      console.log(id);
-
-      if (post.id === id) {
-        return { ...post,
-          comments: [...post.comments, newComments]
-        };
-      }
-
-      return post;
-    });
-    console.log(updatedPosts);
-    dispatch({
-      type: "POSTS",
-      object: updatedPosts
-    });
-    e.target.reset();
-    e.preventDefault(); // console.log(value)
-  }
-
-  function addNewPost(e) {
-    e.preventDefault();
-    const {
-      legend,
-      picture
-    } = e.target;
-    const newPost = {
-      "legend": legend.value,
-      "image": picture.value,
-      "id": Date.now(),
-      "date": Date.now(),
-      "comments": [],
-      "likes": []
-    };
-    console.log(allPosts);
-    allPosts = [...allPosts, newPost];
-    dispatch({
-      type: "POSTS",
-      object: allPosts
-    });
-    e.target.reset();
-  }
-
-  function handleClickLike(post) {
-    console.log(post);
-    const isLiked = post.likes.some(item => item.id == _username.default.id); // console.log(isLiked);
-
-    if (!isLiked) {
-      const updatedPost = allPosts.map(item => {
-        if (item.id == post.id) {
-          useref.current.className = "liked";
-          return { ...item,
-            likes: [...item.likes, _username.default]
-          };
-        }
-
-        return item;
-      });
-      console.log(updatedPost, "liked");
-      dispatch({
-        type: "POSTS",
-        object: updatedPost
-      });
-    } else {
-      const updatedPost = allPosts.map(item => {
-        if (item.id == post.id) {
-          useref.current.className = "unliked";
-          const newPostsArray = post.likes.filter(item => item.id != _username.default.id);
-          return { ...item,
-            likes: newPostsArray
-          };
-        }
-
-        return item;
-      });
-      dispatch({
-        type: "POSTS",
-        object: updatedPost
-      });
-    }
-  }
-
-  const user = _username.default.map(user => user.userName);
-
-  const img = _username.default.map(user => user.profile);
-
   (0, _react.useEffect)(() => {
-    dispatch({
-      type: "POSTS",
-      object: _post.default
-    });
-    dispatch({
-      type: "USERNAME",
-      name: user
-    });
-    dispatch({
-      type: "PROFILE",
-      profile: img
-    });
+    setTimeout(() => {
+      dispatch({
+        type: "POSTS"
+      });
+    }, 1000);
   }, []);
   return /*#__PURE__*/_react.default.createElement(Context.Provider, {
     value: {
-      allPosts,
-      inputValue,
-      addNewComents,
-      userName,
-      addNewPost,
-      profilePhoto,
-      handleClickLike,
-      useref
+      state,
+      dispatch
     }
   }, props.children);
 }
-},{"react":"node_modules/react/index.js","./post.json":"post.json","./username.json":"username.json"}],"node_modules/shallowequal/index.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","./post.json":"post.json","./userOptions.json":"userOptions.json"}],"node_modules/shallowequal/index.js":[function(require,module,exports) {
 //
 
 module.exports = function shallowEqual(objA, objB, compare, compareContext) {
@@ -36039,7 +36000,7 @@ exports.ServerStyleSheet = Ue;
 "production" !== "development" && "undefined" != typeof navigator && "ReactNative" === navigator.product && console.warn("It looks like you've imported 'styled-components' on React Native.\nPerhaps you're looking to import 'styled-components/native'?\nRead more about this at https://www.styled-components.com/docs/basics#react-native"), "production" !== "development" && "test" !== "development" && (window["__styled-components-init__"] = window["__styled-components-init__"] || 0, 1 === window["__styled-components-init__"] && console.warn("It looks like there are several instances of 'styled-components' initialized in this application. This may cause dynamic styles to not render properly, errors during the rehydration process, a missing theme prop, and makes your application bigger without good reason.\n\nSee https://s-c.sh/2BAXzed for more info."), window["__styled-components-init__"] += 1);
 var _default = qe;
 exports.default = _default;
-},{"react-is":"node_modules/react-is/index.js","react":"node_modules/react/index.js","shallowequal":"node_modules/shallowequal/index.js","@emotion/stylis":"node_modules/@emotion/stylis/dist/stylis.browser.esm.js","@emotion/unitless":"node_modules/@emotion/unitless/dist/unitless.browser.esm.js","@emotion/is-prop-valid":"node_modules/@emotion/is-prop-valid/dist/is-prop-valid.browser.esm.js","hoist-non-react-statics":"node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js","process":"../../AppData/Roaming/npm/node_modules/parcel-bundler/node_modules/process/browser.js"}],"components/Feed.js":[function(require,module,exports) {
+},{"react-is":"node_modules/react-is/index.js","react":"node_modules/react/index.js","shallowequal":"node_modules/shallowequal/index.js","@emotion/stylis":"node_modules/@emotion/stylis/dist/stylis.browser.esm.js","@emotion/unitless":"node_modules/@emotion/unitless/dist/unitless.browser.esm.js","@emotion/is-prop-valid":"node_modules/@emotion/is-prop-valid/dist/is-prop-valid.browser.esm.js","hoist-non-react-statics":"node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js","process":"../../AppData/Roaming/npm/node_modules/parcel-bundler/node_modules/process/browser.js"}],"components/Likes.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36050,6 +36011,158 @@ exports.default = void 0;
 var _react = _interopRequireWildcard(require("react"));
 
 var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var _Context = require("../Context");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+const PostLikesStyles = _styledComponents.default.div`
+	display: flex;
+	gap: 10px;
+`;
+
+function Likes({
+  post
+}) {
+  const {
+    state,
+    dispatch
+  } = (0, _react.useContext)(_Context.Context);
+  const {
+    currentUser
+  } = state;
+
+  function hasAlredyLiked() {
+    console.log("....");
+    return post.likes.some(like => like.userId === currentUser);
+  }
+
+  function handleClickNewLike() {
+    const newLike = {
+      id: Date.now(),
+      userId: currentUser
+    };
+    dispatch({
+      type: "LIKE_POST",
+      newLike,
+      id: post.id
+    });
+  }
+
+  function unlikePost() {
+    dispatch({
+      type: "UNLIKE_POST",
+      id: post.id
+    });
+  }
+
+  return /*#__PURE__*/_react.default.createElement(PostLikesStyles, null, hasAlredyLiked() ? /*#__PURE__*/_react.default.createElement("button", {
+    onClick: unlikePost,
+    className: "like-btn"
+  }, "UnLike") : /*#__PURE__*/_react.default.createElement("button", {
+    onClick: handleClickNewLike,
+    className: "like-btn"
+  }, "Like"), /*#__PURE__*/_react.default.createElement("span", null, post.likes.length));
+}
+
+var _default = Likes;
+exports.default = _default;
+},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","../Context":"Context.js"}],"components/AddComents.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _Context = require("../Context");
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+const AddCommentFormStyles = _styledComponents.default.form`
+	display: flex;
+	grid-gap: 10px;
+	justify-content: space-between;
+	background: #c4c4c4;
+	padding: 0.6rem;
+	border-radius: 28px;
+	input {
+		background: none;
+		border: none;
+		width: 100%;
+	}
+`;
+
+function AddComents({
+  post
+}) {
+  const [newCommentText, setNewCommentText] = (0, _react.useState)('');
+  const {
+    state,
+    dispatch
+  } = (0, _react.useContext)(_Context.Context);
+  const {
+    currentUser
+  } = state;
+
+  function AddComments(e) {
+    e.preventDefault();
+    const newComment = {
+      id: Date.now(),
+      userId: currentUser,
+      date: Date.now(),
+      text: newCommentText // userName: currentUser.userName,
+
+    };
+    dispatch({
+      type: 'ADD_COMMENT_TO_POST',
+      id: post.id,
+      newComment
+    });
+    setNewCommentText('');
+  }
+
+  return /*#__PURE__*/_react.default.createElement(AddCommentFormStyles, {
+    onSubmit: AddComments,
+    className: "submit_comments_form"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    type: "text",
+    value: newCommentText,
+    onChange: e => setNewCommentText(e.target.value),
+    placeholder: "Type your comment here",
+    required: true
+  }), /*#__PURE__*/_react.default.createElement("button", null, "Post"));
+}
+
+var _default = AddComents;
+exports.default = _default;
+},{"react":"node_modules/react/index.js","../Context":"Context.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js"}],"components/Feed.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var _Likes = _interopRequireDefault(require("./Likes"));
+
+var _AddComents = _interopRequireDefault(require("./AddComents"));
 
 var _Context = require("../Context");
 
@@ -36078,15 +36191,14 @@ const DiveStyles = _styledComponents.default.div`
 
 function Feed() {
   const {
-    addNewComents,
-    userName,
-    profilePhoto
+    state
   } = (0, _react.useContext)(_Context.Context);
   const {
     allPosts,
-    handleClickLike,
-    useref
-  } = (0, _react.useContext)(_Context.Context);
+    users,
+    currentUser
+  } = state;
+  const currentUserObj = users.find(user => user.userId === currentUser);
   const generatePost = allPosts.map(post => {
     const postedDate = new Date(Number(post.date));
     return /*#__PURE__*/_react.default.createElement(DiveStyles, {
@@ -36095,45 +36207,39 @@ function Feed() {
       className: "post_container"
     }, /*#__PURE__*/_react.default.createElement("li", null, /*#__PURE__*/_react.default.createElement("img", {
       className: "main_profile_img",
-      src: profilePhoto,
+      src: currentUserObj.profileUrl,
       alt: "Profile photo"
-    }), /*#__PURE__*/_react.default.createElement("span", null, userName)), /*#__PURE__*/_react.default.createElement("li", null, postedDate.toLocaleDateString())), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", null, post.legend), /*#__PURE__*/_react.default.createElement("img", {
+    }), /*#__PURE__*/_react.default.createElement("span", null, currentUserObj.userName)), /*#__PURE__*/_react.default.createElement("li", null, postedDate.toLocaleDateString())), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", null, post.legend), /*#__PURE__*/_react.default.createElement("img", {
       className: "posted_img",
       src: post.image,
       alt: "Image post"
     }), /*#__PURE__*/_react.default.createElement("div", {
       className: "vote_container"
-    }, /*#__PURE__*/_react.default.createElement("button", {
-      ref: useref,
-      type: "button",
-      className: "like-btn",
-      onClick: () => handleClickLike(post)
-    }, "Like"), /*#__PURE__*/_react.default.createElement("span", null, post.likes.length))), /*#__PURE__*/_react.default.createElement("div", null, post.comments.map(com => {
+    }, /*#__PURE__*/_react.default.createElement(_Likes.default, {
+      post: post
+    }))), /*#__PURE__*/_react.default.createElement("div", null, post.comments.map(com => {
       const postedOn = new Date(Number(com.date));
+      const commentUserObj = users.find(user => user.userId == currentUser);
+      console.log(commentUserObj);
       return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
         key: com.date
       }, /*#__PURE__*/_react.default.createElement("ul", {
         className: "comments_container"
       }, /*#__PURE__*/_react.default.createElement("li", null, /*#__PURE__*/_react.default.createElement("img", {
         className: "sub_profile_img",
-        src: com.profile,
+        src: commentUserObj.profileUrl,
         alt: "Profile photo"
-      }), /*#__PURE__*/_react.default.createElement("span", null, com.username)), /*#__PURE__*/_react.default.createElement("li", null, postedOn.toLocaleDateString())), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", null, com.text))));
-    })), /*#__PURE__*/_react.default.createElement("form", {
-      className: "submit_comments_form",
-      onSubmit: e => addNewComents(e, post.id)
-    }, /*#__PURE__*/_react.default.createElement("input", {
-      type: "text",
-      name: "comment",
-      placeholder: "Add a comment..."
-    }), /*#__PURE__*/_react.default.createElement("button", null, "Post")));
+      }), /*#__PURE__*/_react.default.createElement("span", null, commentUserObj.userName)), /*#__PURE__*/_react.default.createElement("li", null, postedOn.toLocaleDateString())), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", null, com.text))));
+    })), /*#__PURE__*/_react.default.createElement(_AddComents.default, {
+      post: post
+    }));
   });
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h3", null, "Here is feed"), generatePost);
+  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h3", null, "Home"), generatePost);
 }
 
 var _default = Feed;
 exports.default = _default;
-},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","../Context":"Context.js"}],"components/Add.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","./Likes":"components/Likes.js","./AddComents":"components/AddComents.js","../Context":"Context.js"}],"components/Add.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36150,57 +36256,137 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function Add() {
+  const [postContent, setPostContent] = (0, _react.useState)('');
+  const [postImage, setPostImage] = (0, _react.useState)('');
   const {
-    addNewPost
+    state,
+    dispatch
   } = (0, _react.useContext)(_Context.Context);
+  const {
+    currentUser
+  } = state;
+
+  function addNewPost(e) {
+    e.preventDefault();
+    const newPost = {
+      legend: postContent,
+      image: postImage,
+      userId: currentUser,
+      id: Date.now(),
+      date: Date.now(),
+      comments: [],
+      likes: []
+    };
+    dispatch({
+      type: 'ADD_NEW_POST',
+      newPost: newPost
+    });
+    resetForm();
+  }
+
+  function resetForm() {
+    setPostContent('');
+    setPostImage('');
+  }
+
   return /*#__PURE__*/_react.default.createElement("form", {
-    onSubmit: e => addNewPost(e),
+    onSubmit: addNewPost,
     className: "add-form"
   }, /*#__PURE__*/_react.default.createElement("label", {
     htmlFor: "legend"
   }, "New post"), /*#__PURE__*/_react.default.createElement("textarea", {
     placeholder: "Say what is in your mind...",
-    name: "legend",
-    cols: "30",
-    rows: "10"
+    value: postContent,
+    onChange: e => setPostContent(e.target.value)
   }), /*#__PURE__*/_react.default.createElement("label", {
     htmlFor: "picture"
   }, "Picture url"), /*#__PURE__*/_react.default.createElement("input", {
     type: "url",
-    name: "picture",
-    placeholder: "Paste an URL here..."
+    placeholder: "Paste an URL here...",
+    value: postImage,
+    onChange: e => setPostImage(e.target.value)
   }), /*#__PURE__*/_react.default.createElement("button", null, "Post"));
 }
 
 var _default = Add;
 exports.default = _default;
-},{"react":"node_modules/react/index.js","../Context":"Context.js"}],"components/Username.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","../Context":"Context.js"}],"components/UserProfile.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.default = ProfileOptions;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
+
+var _Context = require("../Context");
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function Username() {
-  return /*#__PURE__*/_react.default.createElement("form", null, /*#__PURE__*/_react.default.createElement("input", {
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+const FormStyle = _styledComponents.default.form`
+	display: grid;
+	gap: 10px;
+	grid-template-columns: 200px;
+	textarea {
+		height: 100px;
+	}
+`;
+
+function ProfileOptions() {
+  const {
+    state,
+    dispatch
+  } = (0, _react.useContext)(_Context.Context);
+  const {
+    users,
+    currentUser
+  } = state;
+  const [userName, setUserName] = (0, _react.useState)('');
+  const [profilePictureUrl, setProfilePictureUrl] = (0, _react.useState)('https://picsum.photos/100'); // we get the full current user object back, so we have a name and picture instead of just an id
+
+  const currentUserObj = users.find(user => user.userId === currentUser) || {
+    userName: '',
+    profileUrl: ''
+  };
+
+  function handleNewOptions(e) {
+    e.preventDefault();
+    dispatch({
+      type: 'UPDATE_CURRENT_USER',
+      userName,
+      profilePictureUrl
+    });
+    alert('Profile updated successfully');
+    console.log(profilePictureUrl);
+  }
+
+  (0, _react.useEffect)(() => {
+    setUserName(currentUserObj.userName);
+    setProfilePictureUrl(currentUserObj.profileUrl);
+  }, [users]);
+  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "Profile Options"), /*#__PURE__*/_react.default.createElement(FormStyle, {
+    onSubmit: handleNewOptions,
+    className: "profile_form"
+  }, /*#__PURE__*/_react.default.createElement("input", {
     type: "text",
-    name: "username",
-    placeholder: "Your username"
+    value: userName,
+    onChange: e => setUserName(e.target.value),
+    required: true
   }), /*#__PURE__*/_react.default.createElement("input", {
     type: "url",
-    name: "profile",
-    placeholder: "Your picture url"
-  }), /*#__PURE__*/_react.default.createElement("button", null, "Save"));
+    value: profilePictureUrl,
+    onChange: e => setProfilePictureUrl(e.target.value),
+    required: true
+  }), /*#__PURE__*/_react.default.createElement("button", null, "Save")));
 }
-
-var _default = Username;
-exports.default = _default;
-},{"react":"node_modules/react/index.js"}],"Pages.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","../Context":"Context.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js"}],"Pages.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36208,18 +36394,24 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = Pages;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _styledComponents = _interopRequireDefault(require("styled-components"));
 
 var _reactRouterDom = require("react-router-dom");
 
+var _Context = require("./Context");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 const MenuStyles = _styledComponents.default.ul`
 	display: flex;
 	list-style: none;
-	gap: 20px;
+	justify-content: space-between;
 	padding : 0;
 	a {
 		text-decoration: none;
@@ -36235,17 +36427,40 @@ const MenuStyles = _styledComponents.default.ul`
 		font-weight: bold;
 	}
 `;
+const ProfileLinkStyles = _styledComponents.default.div`
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	gap: 15px;
+	align-items: center;
+	img {
+		width: 35px;
+		height: 35px;
+		border-radius: 50%;
+	}
+`;
 
 function Pages() {
+  const {
+    state
+  } = (0, _react.useContext)(_Context.Context);
+  const {
+    users,
+    currentUser
+  } = state;
+  const currentUserObj = users.find(user => user.userId === currentUser);
   return /*#__PURE__*/_react.default.createElement(MenuStyles, null, /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
     to: "/"
   }, /*#__PURE__*/_react.default.createElement("li", null, "Feed")), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
     to: "/add"
-  }, /*#__PURE__*/_react.default.createElement("li", null, "Add a post")), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
+  }, /*#__PURE__*/_react.default.createElement("li", null, "Add a post")), /*#__PURE__*/_react.default.createElement("li", null, !currentUserObj && 'Loading...', currentUserObj && /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
     to: "/username"
-  }, /*#__PURE__*/_react.default.createElement("li", null, "Username")));
+  }, /*#__PURE__*/_react.default.createElement(ProfileLinkStyles, null, /*#__PURE__*/_react.default.createElement("span", null, currentUserObj.userName), /*#__PURE__*/_react.default.createElement("img", {
+    src: currentUserObj.profileUrl,
+    alt: `Profile pic of ${currentUserObj.userName}`
+  })))));
 }
-},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js"}],"App.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","./Context":"Context.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36261,7 +36476,7 @@ var _Feed = _interopRequireDefault(require("./components/Feed"));
 
 var _Add = _interopRequireDefault(require("./components/Add"));
 
-var _Username = _interopRequireDefault(require("./components/Username"));
+var _UserProfile = _interopRequireDefault(require("./components/UserProfile"));
 
 var _Pages = _interopRequireDefault(require("./Pages"));
 
@@ -36277,12 +36492,12 @@ function App() {
     path: "/add"
   }, /*#__PURE__*/_react.default.createElement(_Add.default, null)), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Route, {
     path: "/username"
-  }, /*#__PURE__*/_react.default.createElement(_Username.default, null))));
+  }, /*#__PURE__*/_react.default.createElement(_UserProfile.default, null))));
 }
 
 var _default = App;
 exports.default = _default;
-},{"react":"node_modules/react/index.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","./components/Feed":"components/Feed.js","./components/Add":"components/Add.js","./components/Username":"components/Username.js","./Pages":"Pages.js"}],"index.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js","./components/Feed":"components/Feed.js","./components/Add":"components/Add.js","./components/UserProfile":"components/UserProfile.js","./Pages":"Pages.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -36326,7 +36541,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52786" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51823" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

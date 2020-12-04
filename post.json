@@ -1,6 +1,6 @@
 [{
         "id": 1606724563833,
-        "image": "https://picsum.photos/1000",
+        "image": "https://picsum.photos/300",
         "likes": [{
                 "id": 1,
                 "name": "Sarah"
@@ -20,21 +20,19 @@
                 "id": 2,
                 "text": "Yes!!!!!!",
                 "date": 1606802879758,
-                "username": "Arisoa",
                 "profile": "https://picsum.photos/300"
             },
             {
                 "id": 3,
                 "text": "Oooooops",
                 "date": 1606802879758,
-                "username": "Arisoa",
                 "profile": "https://picsum.photos/300"
             }
         ]
     },
 
     {
-        "image": "https://picsum.photos/1000",
+        "image": "https://picsum.photos/300",
         "likes": [{
                 "id": 4,
                 "name": "Sarah"
@@ -53,7 +51,6 @@
             "id": 1606803055863,
             "text": "Wow, I love this",
             "date": 1606803055863,
-            "username": "Arisoa",
             "profile": "https://picsum.photos/300"
         }],
 
@@ -62,7 +59,7 @@
         "legend": "Lovely place where I like to live in😍😊😊"
     },
     {
-        "image": "https://picsum.photos/1000",
+        "image": "https://picsum.photos/300",
         "likes": [{
                 "id": 7,
                 "name": "Sarah"
@@ -81,7 +78,6 @@
             "id": 1606803184211,
             "text": "This is lovely",
             "date": 1606803184211,
-            "username": "Arisoa",
             "profile": "https://picsum.photos/300"
         }],
 

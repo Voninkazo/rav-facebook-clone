@@ -4,6 +4,15 @@ body {
   font-family: "Roboto";
 }
 
+h1 {
+  color: hotpink;
+  font-size: 40px;
+}
+
+a {
+  text-decoration: none;
+}
+
 ul {
   padding: 0;
   list-style: none;
@@ -19,7 +28,6 @@ ul {
 }
 
 .posted_img {
-  width: 100%;
   border-radius: 12px;
   padding-bottom: 20px;
 }
@@ -126,12 +134,28 @@ ul {
   padding: 0.5rem 1rem;
 }
 
-.liked {
-  background-color: blue;
+.profile_form input {
+  padding: 0.5rem 1rem;
+  font-size: 18px;
+  border-radius: 8px;
+}
+.profile_form button {
+  padding: 0.5rem 1rem;
+  background-color: #000000;
+  color: #fcfafa;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 22px;
+  cursor: pointer;
 }
 
-.unliked {
-  background-color: #C4C4C4;
+@media (min-width: 768px) {
+  #root {
+    max-width: 768px;
+    margin: auto;
+  }
 }
 
 /*# sourceMappingURL=/styles.164d45a1.css.map */

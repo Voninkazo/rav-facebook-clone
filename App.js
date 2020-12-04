@@ -3,7 +3,7 @@ import { Switch, Route, Link } from 'react-router-dom';
 
 import Feed from './components/Feed';
 import Add from './components/Add';
-import Username from './components/Username';
+import ProfileOptions  from './components/UserProfile';
 import Pages from './Pages'
 
 function App() {
@@ -21,7 +21,7 @@ function App() {
             <Add />
         </Route>
         <Route path="/username">
-          <Username />
+          <ProfileOptions />
         </Route>
       </Switch>
     </div>

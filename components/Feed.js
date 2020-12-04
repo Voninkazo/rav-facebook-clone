@@ -1,6 +1,9 @@
 import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
 
+import Likes from './Likes';
+import AddComments from './AddComents';
+
 const DiveStyles = styled.div`
   .post_container {
     display: flex;
@@ -21,17 +24,18 @@ const DiveStyles = styled.div`
 import {Context} from '../Context';
 
 function Feed() {
-  const {addNewComents,userName,profilePhoto} = useContext(Context)
-  const {allPosts, handleClickLike,useref} = useContext(Context);
-  
+  const {state} = useContext(Context);
+  const {allPosts,users,currentUser} = state;
+  const currentUserObj = users.find(user => user.userId === currentUser);
+
   const generatePost = allPosts.map(post => {
     const postedDate =new Date(Number(post.date))
     return(
       <DiveStyles key={post.id}>
         <ul className="post_container" >
           <li>
-            <img className="main_profile_img" src={profilePhoto} alt="Profile photo"/>
-            <span>{userName}</span>
+            <img className="main_profile_img" src={currentUserObj.profileUrl} alt="Profile photo"/>
+            <span>{currentUserObj.userName}</span>
           </li>
           <li>
             {postedDate.toLocaleDateString()}
@@ -41,21 +45,22 @@ function Feed() {
           <p>{post.legend}</p>
           <img className="posted_img" src={post.image} alt="Image post"/>
          <div className="vote_container">
-           <button ref={useref} type="button" className="like-btn" onClick={() =>handleClickLike(post)}>Like</button>
-          <span>{post.likes.length}</span>
+           <Likes post={post} />
          </div>
         </div>
         <div>
             {
             post.comments.map(com => {
-                const postedOn = new Date(Number(com.date))
+                const postedOn = new Date(Number(com.date));
+                const commentUserObj = users.find(user => user.userId == currentUser);
+                console.log(commentUserObj)
                 return(
                   <>
                     <div key={com.date}>
                       <ul className="comments_container">
                           <li>
-                            <img className="sub_profile_img" src={com.profile} alt="Profile photo"/>
-                            <span>{com.username}</span>
+                            <img className="sub_profile_img" src={commentUserObj.profileUrl} alt="Profile photo"/>
+                            <span>{commentUserObj.userName}</span>
                           </li>
                           <li>{postedOn.toLocaleDateString()}</li>
                       </ul>
@@ -68,16 +73,13 @@ function Feed() {
               })
             }
         </div>
-        <form className="submit_comments_form" onSubmit={(e) => addNewComents(e,post.id)}>
-            <input type="text" name="comment" placeholder="Add a comment..." />
-            <button>Post</button>
-        </form>
+       <AddComments post={post}/>
       </DiveStyles>
     )
   })
   return (
     <div>
-      <h3>Here is feed</h3>
+      <h3>Home</h3>
       {generatePost}
     </div>
   )
