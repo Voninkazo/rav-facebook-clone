@@ -31,7 +31,7 @@ function Feed() {
   const generatePost = allPosts.map(post => {
     const postedDate =new Date(Number(post.date))
     return(
-      <DiveStyles key={post.id}>
+      <DiveStyles key={post.id} className="feed-container">
         <ul className="post_container" >
           <li>
             <img className="main_profile_img" src={currentUserObj.profileUrl} alt="Profile photo"/>

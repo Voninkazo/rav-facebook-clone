@@ -1,11 +1,10 @@
-import React, { useEffect,useReducer, useRef} from 'react';
+import React, { useEffect,useReducer} from 'react';
 
 import Posts from './post.json';
 import userProfileData from './userOptions.json';
 const Context = React.createContext();
 
 function ContextProvider(props) {
-    const useref = useRef(null)
     const [state,dispatch] = useReducer((state,action) => {
         switch(action.type) {
             case "POSTS":

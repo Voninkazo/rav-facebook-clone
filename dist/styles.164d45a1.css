@@ -2,6 +2,7 @@ body {
   margin: 0;
   font-size: 16px;
   font-family: "Roboto";
+  background-color: #dfdce9;
 }
 
 h1 {
@@ -27,8 +28,12 @@ ul {
   border-radius: 50%;
 }
 
+.feed-container {
+  max-width: 300px;
+}
+
 .posted_img {
-  border-radius: 12px;
+  border-radius: 5%;
   padding-bottom: 20px;
 }
 
@@ -126,12 +131,8 @@ ul {
   border-radius: 50%;
 }
 
-.like-btn {
-  background: #C4C4C4;
+.icon-like {
   cursor: pointer;
-  outline: none;
-  border: none;
-  padding: 0.5rem 1rem;
 }
 
 .profile_form input {

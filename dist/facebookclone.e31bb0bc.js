@@ -33961,7 +33961,6 @@ const Context = _react.default.createContext();
 exports.Context = Context;
 
 function ContextProvider(props) {
-  const useref = (0, _react.useRef)(null);
   const [state, dispatch] = (0, _react.useReducer)((state, action) => {
     switch (action.type) {
       case "POSTS":
@@ -36000,7 +35999,11 @@ exports.ServerStyleSheet = Ue;
 "production" !== "development" && "undefined" != typeof navigator && "ReactNative" === navigator.product && console.warn("It looks like you've imported 'styled-components' on React Native.\nPerhaps you're looking to import 'styled-components/native'?\nRead more about this at https://www.styled-components.com/docs/basics#react-native"), "production" !== "development" && "test" !== "development" && (window["__styled-components-init__"] = window["__styled-components-init__"] || 0, 1 === window["__styled-components-init__"] && console.warn("It looks like there are several instances of 'styled-components' initialized in this application. This may cause dynamic styles to not render properly, errors during the rehydration process, a missing theme prop, and makes your application bigger without good reason.\n\nSee https://s-c.sh/2BAXzed for more info."), window["__styled-components-init__"] += 1);
 var _default = qe;
 exports.default = _default;
-},{"react-is":"node_modules/react-is/index.js","react":"node_modules/react/index.js","shallowequal":"node_modules/shallowequal/index.js","@emotion/stylis":"node_modules/@emotion/stylis/dist/stylis.browser.esm.js","@emotion/unitless":"node_modules/@emotion/unitless/dist/unitless.browser.esm.js","@emotion/is-prop-valid":"node_modules/@emotion/is-prop-valid/dist/is-prop-valid.browser.esm.js","hoist-non-react-statics":"node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js","process":"../../AppData/Roaming/npm/node_modules/parcel-bundler/node_modules/process/browser.js"}],"components/Likes.js":[function(require,module,exports) {
+},{"react-is":"node_modules/react-is/index.js","react":"node_modules/react/index.js","shallowequal":"node_modules/shallowequal/index.js","@emotion/stylis":"node_modules/@emotion/stylis/dist/stylis.browser.esm.js","@emotion/unitless":"node_modules/@emotion/unitless/dist/unitless.browser.esm.js","@emotion/is-prop-valid":"node_modules/@emotion/is-prop-valid/dist/is-prop-valid.browser.esm.js","hoist-non-react-statics":"node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js","process":"../../AppData/Roaming/npm/node_modules/parcel-bundler/node_modules/process/browser.js"}],"icons/thumb_up.svg":[function(require,module,exports) {
+module.exports = "/thumb_up.d327720e.svg";
+},{}],"icons/thumb_down.svg":[function(require,module,exports) {
+module.exports = "/thumb_down.0b6bf81d.svg";
+},{}],"components/Likes.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36011,6 +36014,10 @@ exports.default = void 0;
 var _react = _interopRequireWildcard(require("react"));
 
 var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var _thumb_up = _interopRequireDefault(require("../icons/thumb_up.svg"));
+
+var _thumb_down = _interopRequireDefault(require("../icons/thumb_down.svg"));
 
 var _Context = require("../Context");
 
@@ -36060,18 +36067,22 @@ function Likes({
     });
   }
 
-  return /*#__PURE__*/_react.default.createElement(PostLikesStyles, null, hasAlredyLiked() ? /*#__PURE__*/_react.default.createElement("button", {
+  return /*#__PURE__*/_react.default.createElement(PostLikesStyles, null, hasAlredyLiked() ? /*#__PURE__*/_react.default.createElement("img", {
+    src: _thumb_up.default,
+    className: "icon-like",
     onClick: unlikePost,
-    className: "like-btn"
-  }, "UnLike") : /*#__PURE__*/_react.default.createElement("button", {
+    alt: "unlike"
+  }) : /*#__PURE__*/_react.default.createElement("img", {
+    src: _thumb_down.default,
+    className: "icon-like",
     onClick: handleClickNewLike,
-    className: "like-btn"
-  }, "Like"), /*#__PURE__*/_react.default.createElement("span", null, post.likes.length));
+    alt: "like"
+  }), /*#__PURE__*/_react.default.createElement("span", null, post.likes.length));
 }
 
 var _default = Likes;
 exports.default = _default;
-},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","../Context":"Context.js"}],"components/AddComents.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","styled-components":"node_modules/styled-components/dist/styled-components.browser.esm.js","../icons/thumb_up.svg":"icons/thumb_up.svg","../icons/thumb_down.svg":"icons/thumb_down.svg","../Context":"Context.js"}],"components/AddComents.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36202,7 +36213,8 @@ function Feed() {
   const generatePost = allPosts.map(post => {
     const postedDate = new Date(Number(post.date));
     return /*#__PURE__*/_react.default.createElement(DiveStyles, {
-      key: post.id
+      key: post.id,
+      className: "feed-container"
     }, /*#__PURE__*/_react.default.createElement("ul", {
       className: "post_container"
     }, /*#__PURE__*/_react.default.createElement("li", null, /*#__PURE__*/_react.default.createElement("img", {
@@ -36485,7 +36497,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function App() {
   return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_reactRouterDom.Link, {
     to: "/"
-  }, /*#__PURE__*/_react.default.createElement("h1", null, "Home")), /*#__PURE__*/_react.default.createElement(_Pages.default, null), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Switch, null, /*#__PURE__*/_react.default.createElement(_reactRouterDom.Route, {
+  }, /*#__PURE__*/_react.default.createElement("h1", null, "Onjabook")), /*#__PURE__*/_react.default.createElement(_Pages.default, null), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Switch, null, /*#__PURE__*/_react.default.createElement(_reactRouterDom.Route, {
     exact: true,
     path: "/"
   }, /*#__PURE__*/_react.default.createElement(_Feed.default, null)), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Route, {

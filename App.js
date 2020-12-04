@@ -10,7 +10,7 @@ function App() {
   return (
     <div>
       <Link to="/">
-        <h1>Home</h1>
+        <h1>Onjabook</h1>
       </Link>
       <Pages/>
       <Switch>
